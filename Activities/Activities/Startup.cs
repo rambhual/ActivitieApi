@@ -8,6 +8,9 @@ using Activities.Infrastructure.Extension;
 using Activities.Service;
 using Serilog;
 using System.IO;
+using FluentValidation.AspNetCore;
+using Activities.Service.Interface;
+using Activities.Infrastructure.Security;
 
 namespace Activities
 {
@@ -21,6 +24,7 @@ namespace Activities
 
             IConfigurationBuilder builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json");
             configRoot = builder.Build();
+
         }
 
         public IConfiguration Configuration { get; }
@@ -44,6 +48,12 @@ namespace Activities
             services.AddMediatorCQRS();
 
             services.AddVersion();
+
+            services.AddFluentValidation();
+
+            services.AddIdentityCore();
+
+            services.AddScoped<IJwtGenerator, JwtGenerator>();
 
         }
 

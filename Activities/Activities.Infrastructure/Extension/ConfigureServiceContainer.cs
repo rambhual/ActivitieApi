@@ -11,6 +11,13 @@ using Activities.Service.Implementation;
 using System;
 using System.IO;
 using System.Reflection;
+using FluentValidation.AspNetCore;
+using Activities.Service.Features.CustomerFeatures.Commands;
+using Activities.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace Activities.Infrastructure.Extension
 {
@@ -20,7 +27,7 @@ namespace Activities.Infrastructure.Extension
              IConfiguration configuration, IConfigurationRoot configRoot)
         {
             serviceCollection.AddDbContext<ApplicationDbContext>(options =>
-                   options.UseSqlServer(configuration.GetConnectionString("OnionArchConn") ?? configRoot["ConnectionStrings:OnionArchConn"])
+                   options.UseSqlite(configuration.GetConnectionString("OnionArchConn") ?? configRoot["ConnectionStrings:OnionArchConn"])
                 );
         }
 
@@ -101,6 +108,33 @@ namespace Activities.Infrastructure.Extension
             });
         }
 
+        public static void AddFluentValidation(this IServiceCollection serviceCollection)
+        {
+            serviceCollection.AddControllers().AddFluentValidation(config =>
+            {
+                config.RegisterValidatorsFromAssemblyContaining<CreateCustomerCommand>();
+            });
+        }
+
+
+        public static void AddIdentityCore(this IServiceCollection service)
+        {
+            var builder = service.AddIdentityCore<AppUser>();
+            var identityBuilder = new IdentityBuilder(builder.UserType, builder.Services);
+            identityBuilder.AddEntityFrameworkStores<ApplicationDbContext>();
+            identityBuilder.AddSignInManager<SignInManager<AppUser>>();
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("EFhk1d7txtRehRybSGTAXoBZllfyCJyI"));
+            service.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt =>
+            {
+                opt.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = key,
+                    ValidateAudience = false,
+                    ValidateIssuer = false
+                };
+            });
+        }
 
     }
 }

@@ -17,11 +17,10 @@ namespace Activities.Service.Features.CustomerFeatures.Queries
             {
                 _context = context;
             }
-            public async Task<Customer> Handle(GetCustomerByIdQuery request, CancellationToken cancellationToken)
+
+            public Task<Customer> Handle(GetCustomerByIdQuery request, CancellationToken cancellationToken)
             {
-                var customer = _context.Customers.Where(a => a.Id == request.Id).FirstOrDefault();
-                if (customer == null) return null;
-                return customer;
+                throw new System.NotImplementedException();
             }
         }
     }

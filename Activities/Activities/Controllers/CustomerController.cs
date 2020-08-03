@@ -4,17 +4,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Activities.Service.Features.CustomerFeatures.Commands;
 using Activities.Service.Features.CustomerFeatures.Queries;
 using System.Threading.Tasks;
+using System;
 
 namespace Activities.Controllers
 {
-    [ApiController]
-    [Route("api/v{version:apiVersion}/Customer")]
-    [ApiVersion("1.0")]
-    public class CustomerController : ControllerBase
-    {
-        private IMediator _mediator;
-        protected IMediator Mediator => _mediator ??= HttpContext.RequestServices.GetService<IMediator>();
 
+    public class CustomerController : BaseController
+    {
         [HttpPost]
         public async Task<IActionResult> Create(CreateCustomerCommand command)
         {
@@ -42,7 +38,7 @@ namespace Activities.Controllers
 
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, UpdateCustomerCommand command)
+        public async Task<IActionResult> Update(Guid id, UpdateCustomerCommand command)
         {
             if (id != command.Id)
             {

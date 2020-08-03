@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Activities.Domain.Entities;
 using System.Threading.Tasks;
+using System;
 
 namespace Activities.Persistence
 {
@@ -12,6 +13,6 @@ namespace Activities.Persistence
         DbSet<Product> Products { get; set; }
         DbSet<Supplier> Suppliers { get; set; }
 
-        Task<int> SaveChangesAsync();
+        Task<Guid> SaveChangesAsync();
     }
 }

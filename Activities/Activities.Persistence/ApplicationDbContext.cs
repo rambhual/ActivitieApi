@@ -1,10 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Activities.Domain.Entities;
 using System.Threading.Tasks;
+using System;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Activities.Persistence
 {
-    public class ApplicationDbContext : DbContext, IApplicationDbContext
+    public class ApplicationDbContext : IdentityDbContext<AppUser>, IApplicationDbContext
     {
         // This constructor is used of runit testing
         public ApplicationDbContext()
@@ -24,6 +26,7 @@ namespace Activities.Persistence
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<OrderDetail>().HasKey(o => new { o.OrderId, o.ProductId });
         }
 
@@ -32,14 +35,14 @@ namespace Activities.Persistence
             if (!optionsBuilder.IsConfigured)
             {
                 optionsBuilder
-                .UseSqlServer("DataSource=app.db");
+                .UseSqlite("DataSource=app.db");
             }
 
         }
 
-        public async Task<int> SaveChangesAsync()
+        public Task<Guid> SaveChangesAsync()
         {
-            return await base.SaveChangesAsync();
+            throw new NotImplementedException();
         }
     }
 }

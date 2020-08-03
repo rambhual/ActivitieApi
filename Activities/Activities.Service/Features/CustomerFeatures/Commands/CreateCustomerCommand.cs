@@ -3,10 +3,12 @@ using Activities.Domain.Entities;
 using Activities.Persistence;
 using System.Threading;
 using System.Threading.Tasks;
+using System;
+using FluentValidation;
 
 namespace Activities.Service.Features.CustomerFeatures.Commands
 {
-    public class CreateCustomerCommand : IRequest<int>
+    public class CreateCustomerCommand : IRequest<Guid>
     {
         public string CustomerName { get; set; }
         public string ContactName { get; set; }
@@ -18,22 +20,25 @@ namespace Activities.Service.Features.CustomerFeatures.Commands
         public string Country { get; set; }
         public string Phone { get; set; }
         public string Fax { get; set; }
-        public class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerCommand, int>
+
+        public class CommandValidator : AbstractValidator<CreateCustomerCommand>
+        {
+            public CommandValidator()
+            {
+                RuleFor(x => x.CustomerName).NotEmpty();
+            }
+        }
+        public class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerCommand, Guid>
         {
             private readonly IApplicationDbContext _context;
             public CreateCustomerCommandHandler(IApplicationDbContext context)
             {
                 _context = context;
             }
-            public async Task<int> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
-            {
-                var customer = new Customer();
-                customer.CustomerName = request.CustomerName;
-                customer.ContactName = request.ContactName;
 
-                _context.Customers.Add(customer);
-                await _context.SaveChangesAsync();
-                return customer.Id;
+            public Task<Guid> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
+            {
+                throw new NotImplementedException();
             }
         }
     }
