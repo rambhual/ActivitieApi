@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Activities.Domain.Entities;
 using Activities.Persistence;
 using System.Threading;
 using System.Threading.Tasks;

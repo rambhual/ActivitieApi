@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Activities.Domain.Entities;
 using Activities.Persistence;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 

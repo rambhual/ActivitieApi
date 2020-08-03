@@ -1,6 +1,4 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.Mvc;
 using Activities.Service.Features.CustomerFeatures.Commands;
 using Activities.Service.Features.CustomerFeatures.Queries;
 using System.Threading.Tasks;
@@ -8,7 +6,6 @@ using System;
 
 namespace Activities.Controllers
 {
-
     public class CustomerController : BaseController
     {
         [HttpPost]
@@ -18,7 +15,6 @@ namespace Activities.Controllers
         }
 
         [HttpGet]
-        [Route("")]
         public async Task<IActionResult> GetAll()
         {
             return Ok(await Mediator.Send(new GetAllCustomerQuery()));

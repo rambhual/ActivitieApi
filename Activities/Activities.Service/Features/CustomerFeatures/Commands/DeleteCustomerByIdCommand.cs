@@ -1,7 +1,5 @@
 ﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Activities.Persistence;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System;

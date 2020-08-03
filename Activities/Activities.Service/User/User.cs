@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Activities.Service.User
+﻿namespace Activities.Service.User
 {
     public class User
     {

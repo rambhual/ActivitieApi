@@ -18,6 +18,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 namespace Activities.Infrastructure.Extension
 {
@@ -64,8 +66,8 @@ namespace Activities.Infrastructure.Extension
                         Description = "Through this API you can access customer details",
                         Contact = new Microsoft.OpenApi.Models.OpenApiContact()
                         {
-                            Email = "amit.naik8103@gmail.com",
-                            Name = "Amit Naik",
+                            Email = "Rampritsahani@gmail.com",
+                            Name = "Ramprit Sahani",
                             Url = new Uri("https://amitpnk.github.io/")
                         },
                         License = new Microsoft.OpenApi.Models.OpenApiLicense()
@@ -90,7 +92,11 @@ namespace Activities.Infrastructure.Extension
 
         public static void AddController(this IServiceCollection serviceCollection)
         {
-            serviceCollection.AddControllers().AddNewtonsoftJson();
+            serviceCollection.AddControllers(opt =>
+            {
+                var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+                opt.Filters.Add(new AuthorizeFilter(policy));
+            }).AddNewtonsoftJson();
         }
 
         //public static void AddMediatorCQRS(this IServiceCollection services)
@@ -111,19 +117,18 @@ namespace Activities.Infrastructure.Extension
         public static void AddFluentValidation(this IServiceCollection serviceCollection)
         {
             serviceCollection.AddControllers().AddFluentValidation(config =>
-            {
-                config.RegisterValidatorsFromAssemblyContaining<CreateCustomerCommand>();
-            });
+           {
+               config.RegisterValidatorsFromAssemblyContaining<CreateCustomerCommand>();
+           });
         }
 
-
-        public static void AddIdentityCore(this IServiceCollection service)
+        public static void AddIdentityCore(this IServiceCollection service, IConfiguration config)
         {
             var builder = service.AddIdentityCore<AppUser>();
             var identityBuilder = new IdentityBuilder(builder.UserType, builder.Services);
             identityBuilder.AddEntityFrameworkStores<ApplicationDbContext>();
             identityBuilder.AddSignInManager<SignInManager<AppUser>>();
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("EFhk1d7txtRehRybSGTAXoBZllfyCJyI"));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.GetValue<string>("tokenKey")));
             service.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt =>
             {
                 opt.TokenValidationParameters = new TokenValidationParameters

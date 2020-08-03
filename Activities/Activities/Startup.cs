@@ -51,7 +51,7 @@ namespace Activities
 
             services.AddFluentValidation();
 
-            services.AddIdentityCore();
+            services.AddIdentityCore(Configuration);
 
             services.AddScoped<IJwtGenerator, JwtGenerator>();
 
@@ -65,6 +65,8 @@ namespace Activities
             }
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
